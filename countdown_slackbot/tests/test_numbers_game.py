@@ -56,3 +56,43 @@ class TestNumbers(unittest.TestCase):
         # This is not...
         with self.assertRaises(ValueError):
             numbers.pick_numbers(num_from_top_row=4, total_num_required=25)
+
+
+class TestOperator(unittest.TestCase):
+
+    def test_call(self):
+        self.assertEqual(numbers.PLUS(18, 6), 24)
+        self.assertEqual(numbers.SUBTRACT(18, 6), 12)
+        self.assertEqual(numbers.MULTIPLY(18, 6), 108)
+        self.assertEqual(numbers.DIVIDE(18, 6), 3)
+
+
+class TestCalculation(unittest.TestCase):
+
+    def test_simple_parse(self):
+        line = "45 / 3 = 15"
+        result = numbers.Calculation.parse(line)
+
+        self.assertEqual(result.num_1, 45)
+        self.assertEqual(result.operator, numbers.DIVIDE)
+        self.assertEqual(result.num_2, 3)
+        self.assertEqual(result.asserted_result, 15)
+
+    def test_apply(self):
+        nums = [1, 2, 4, 8]
+
+        with self.assertRaises(numbers.NumberNotPresentError):
+            doesnt_have_5 = numbers.Calculation(num_1=5, num_2=4, operator=numbers.PLUS, asserted_result=9)
+            doesnt_have_5.apply(nums)
+
+        with self.assertRaises(numbers.InvalidAssertionError):
+            bad_assertion = numbers.Calculation(num_1=1, num_2=2, operator=numbers.SUBTRACT, asserted_result=100)
+            bad_assertion.apply(nums)
+
+        good_calculation = numbers.Calculation(num_1=8, num_2=4, operator=numbers.DIVIDE, asserted_result=2)
+        good_calculation.apply(nums)
+
+        self.assertNotIn(4, nums)
+        self.assertNotIn(8, nums)
+
+        self.assertCountEqual(nums, [1, 2, 2])

@@ -3,8 +3,9 @@ import sys
 
 
 REQUIREMENTS = [
+    "attrs>=18,<19",
     "nose>=1.3,<1.4",
-    "slackbot>=0.4,<0.5"
+    "slackbot>=0.5,<0.6"
 ]
 
 
