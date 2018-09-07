@@ -4,7 +4,8 @@ import sys
 
 REQUIREMENTS = [
     "nose>=1.3,<1.4",
-    "slackbot>=0.4,<0.5"
+    "ply>=3.11,<3.12",
+    "slackbot>=0.5,<0.6"
 ]
 
 
