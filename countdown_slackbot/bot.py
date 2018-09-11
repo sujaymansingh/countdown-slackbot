@@ -14,12 +14,23 @@ from copy import deepcopy
 from slackbot.bot import Bot, listen_to
 
 from . import numbers
+from . import countdown_solver
+
 # from .arithmetic.raw_parse import raw_parse
 from .arithmetic import AvailableNumbers, parse
 
 TARGET = None
 NUMBERS = []
 USER_STATES = {}
+
+
+@listen_to("^.*give up.*$", re.IGNORECASE)
+def solve_problem(message):
+    try:
+        result = countdown_solver.SolveProblem(TARGET, NUMBERS)
+        message.reply("Result: {}".format(result))
+    except Exception as e:
+        message.reply("Problem: {}".format(e))
 
 
 @listen_to("^([01234]) from the top.*$", re.IGNORECASE)
