@@ -26,48 +26,52 @@ USER_STATES = {}
 
 @listen_to("^.*give up.*$", re.IGNORECASE)
 def solve_problem(message):
-    try:
-        result = countdown_solver.SolveProblem(TARGET, NUMBERS)
-        message.reply("Result: {}".format(result))
-    except Exception as e:
-        message.reply("Problem: {}".format(e))
+    if message.channel == "countingdown":
+		try:
+			result = countdown_solver.SolveProblem(TARGET, NUMBERS)
+			message.reply("Result: {}".format(result))
+		except Exception as e:
+			message.reply("Problem: {}".format(e))
 
 
 @listen_to("^([01234]) from the top.*$", re.IGNORECASE)
 def chat_message(message, str_num_from_top_row):
-    try:
-        num_from_top_row = int(str_num_from_top_row)
-    except (ValueError, TypeError):
-        message.reply("Need a number between 0-4 from the top row")
-        return
+    if message.channel == "countingdown":
+		try:
+			num_from_top_row = int(str_num_from_top_row)
+		except (ValueError, TypeError):
+			message.reply("Need a number between 0-4 from the top row")
+			return
 
-    return numbers_game(message, num_from_top_row)
+		return numbers_game(message, num_from_top_row)
 
 
 @listen_to("^([\(\)0-9+/\*-= \n]*)$")
 def user_statement(message, full_statement_str):
-    for line in full_statement_str.split("\n"):
-        statement = parse(line.strip())
-        (available_numbers, target) = get_user_state(message.user)
+    if message.channel == "countingdown":
+		for line in full_statement_str.split("\n"):
+			statement = parse(line.strip())
+			(available_numbers, target) = get_user_state(message.user)
 
-        try:
-            statement.evaluate(available_numbers)
-        except Exception as e:
-            message.reply("Problem: {}".format(e))
-            break
+			try:
+				statement.evaluate(available_numbers)
+			except Exception as e:
+				message.reply("Problem: {}".format(e))
+				break
 
-        if target in available_numbers:
-            message.reply("Congrats!")
-            break
-        else:
-            message.reply("Yes: {}".format(statement))
+			if target in available_numbers:
+				message.reply("Congrats!")
+				break
+			else:
+				message.reply("Yes: {}".format(statement))
 
-        set_user_state(message.user, (available_numbers, target))
+			set_user_state(message.user, (available_numbers, target))
 
 
 @listen_to("^reset$", re.IGNORECASE)
 def reset(message):
-    set_user_state(message.user, (AvailableNumbers(NUMBERS), TARGET))
+    if message.channel == "countingdown":
+		set_user_state(message.user, (AvailableNumbers(NUMBERS), TARGET))
 
 
 def numbers_game(message, num_from_top_row):
